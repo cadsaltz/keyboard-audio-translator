@@ -1,0 +1,257 @@
+
+Things I need to figure out before leaving (while i still have internet):
+
+What kind of data is stored in mp3
+	how do time work? similar to videos?
+	how do i read the data	
+
+How to read data from an mp3 file in python
+
+how to start recording from a program and stop recording on command
+
+gather sample data (record piano, and lots of key types)
+
+how to map certain sounds (what kind of data is sound?) to a specific key
+
+
+Implementation Tips
+Tools and Libraries:
+
+Audio Processing: pydub, librosa
+Peak Detection: scipy, numpy
+Machine Learning: scikit-learn, TensorFlow, PyTorch
+Grammar Checking: language-tool-python
+Data Collection:
+
+Record yourself typing sample sentences to build a training dataset.
+Include diverse typing patterns and speeds.
+Debugging:
+
+Plot waveforms and spectrograms to verify keystroke detection.
+Print intermediate results (e.g., detected key sounds, mappings).
+
+
+Basic Implementation: Reading and Recording Audio
+Here’s how we can implement the first part of your program:
+
+Check for Input:
+
+If a file is provided as an argument, read the WAV file.
+If no argument is provided, start recording.
+Record Audio:
+
+Use a library like pyaudio to capture sound from a microphone.
+Save the recording to a WAV file for further processing.
+Read the WAV File:
+
+Load the WAV file using wave or pydub.
+
+
+
+Things that need to be done:
+Read from mp3
+record and generate mp3
+ml model
+ml training data
+
+
+
+
+
+
+
+
+
+
+
+
+1. Required Tools and Libraries
+Python: The main programming language.
+Libraries:
+pyaudio or sounddevice: To record audio.
+wave: To handle .wav file formats.
+librosa: For audio feature extraction and processing.
+numpy: For numerical computations.
+matplotlib: For visualizing audio data.
+scipy: For additional signal processing.
+Install Libraries:
+
+bash
+Copy code
+pip install numpy matplotlib librosa sounddevice scipy
+2. Overall Workflow
+Recording Audio:
+
+Record audio from your keyboard using a microphone.
+Save the audio as a .wav file for processing.
+Feature Extraction:
+
+Analyze the recorded audio to extract characteristics (e.g., frequency, amplitude).
+Visualize these features to differentiate key sounds.
+Mapping Keys:
+
+Create a database of key sounds.
+Extract features from individual key recordings and save them.
+Matching Sounds:
+
+Match the sound of a sequence of keypresses against the saved key database.
+Translation:
+
+Convert matched key sounds into text.
+3. Code Examples for Each Step
+Step 1: Recording Audio
+python
+Copy code
+import sounddevice as sd
+import wave
+
+def record_audio(filename="output.wav", duration=5, sample_rate=44100):
+    print("Recording...")
+    audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
+    sd.wait()  # Wait until recording is finished
+    print("Recording complete.")
+
+    # Save as a .wav file
+    with wave.open(filename, 'wb') as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)  # 16-bit audio
+        wf.setframerate(sample_rate)
+        wf.writeframes(audio_data.tobytes())
+    print(f"Audio saved to {filename}")
+
+record_audio(duration=10)  # Record for 10 seconds
+Step 2: Reading and Visualizing Audio
+python
+Copy code
+import librosa
+import librosa.display
+import matplotlib.pyplot as plt
+
+def visualize_audio(filename):
+    # Load audio
+    y, sr = librosa.load(filename, sr=None)
+    plt.figure(figsize=(12, 6))
+
+    # Plot waveform
+    plt.subplot(2, 1, 1)
+    librosa.display.waveshow(y, sr=sr)
+    plt.title("Waveform")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Amplitude")
+
+    # Plot spectrogram
+    plt.subplot(2, 1, 2)
+    spectrogram = librosa.amplitude_to_db(librosa.stft(y), ref=np.max)
+    librosa.display.specshow(spectrogram, sr=sr, x_axis='time', y_axis='hz', cmap='coolwarm')
+    plt.title("Spectrogram")
+    plt.colorbar(format="%+2.0f dB")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Frequency (Hz)")
+
+    plt.tight_layout()
+    plt.show()
+
+visualize_audio("output.wav")
+Step 3: Extracting Audio Features
+Extract features to differentiate keypresses.
+
+python
+Copy code
+import numpy as np
+
+def extract_features(filename):
+    y, sr = librosa.load(filename, sr=None)
+
+    # Extract MFCCs (Mel Frequency Cepstral Coefficients)
+    mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+    mfccs_mean = np.mean(mfccs, axis=1)
+
+    # Extract Spectral Centroid
+    spectral_centroid = np.mean(librosa.feature.spectral_centroid(y=y, sr=sr))
+
+    # Extract Zero-Crossing Rate
+    zero_crossing_rate = np.mean(librosa.feature.zero_crossing_rate(y))
+
+    # Return features
+    return {
+        "mfccs_mean": mfccs_mean,
+        "spectral_centroid": spectral_centroid,
+        "zero_crossing_rate": zero_crossing_rate
+    }
+
+features = extract_features("output.wav")
+print(features)
+Step 4: Manually Mapping Keys
+Record individual keys and save their features.
+
+python
+Copy code
+import os
+import json
+
+def save_key_mapping(key, filename):
+    features = extract_features(filename)
+    mapping_file = "key_mapping.json"
+
+    if os.path.exists(mapping_file):
+        with open(mapping_file, 'r') as f:
+            key_mapping = json.load(f)
+    else:
+        key_mapping = {}
+
+    key_mapping[key] = features
+
+    with open(mapping_file, 'w') as f:
+        json.dump(key_mapping, f, indent=4)
+    print(f"Key '{key}' saved.")
+
+save_key_mapping("A", "key_A.wav")
+Step 5: Matching Keys
+Compare features of new audio to existing mappings.
+
+python
+Copy code
+from scipy.spatial.distance import euclidean
+
+def match_key(filename):
+    features = extract_features(filename)
+    with open("key_mapping.json", 'r') as f:
+        key_mapping = json.load(f)
+
+    best_match = None
+    best_distance = float('inf')
+
+    for key, saved_features in key_mapping.items():
+        distance = euclidean(features["mfccs_mean"], saved_features["mfccs_mean"])
+        if distance < best_distance:
+            best_distance = distance
+            best_match = key
+
+    return best_match
+
+key = match_key("unknown_key.wav")
+print(f"Matched key: {key}")
+Step 6: Translating to Text
+Combine individual key matches to reconstruct text.
+
+python
+Copy code
+def translate_audio(key_files):
+    text = ""
+    for file in key_files:
+        key = match_key(file)
+        if key:
+            text += key
+    return text
+
+text = translate_audio(["key_A.wav", "key_S.wav", "key_D.wav"])
+print(f"Translated text: {text}")
+4. Debugging and Validation
+Add Counters:
+Count the number of keys detected and validate against the expected count.
+Log Progress:
+Log features, matches, and results for debugging.
+5. Future Improvements
+Implement machine learning to automate feature extraction and matching.
+Use ngrams and common patterns (e.g., "th", "ing") for smarter matching.
+Add error handling for noisy or missing audio.
