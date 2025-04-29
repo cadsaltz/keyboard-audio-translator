@@ -24,11 +24,13 @@ from scipy.optimize import curve_fit
 import csv
 import os
 
+from trainy import append_keys_to_file
+
 # define global variables for fine tuning
 
 #WINDOW_LEFT = 1700
 #WINDOW_RIGHT = 2500
-BNT = 320
+BNT = 350
 WIN = 300
 
 PEAK_THRES = 10000
@@ -88,10 +90,10 @@ def find_dynamic_window(signal, center_idx, window_size):
 	
 
 	while left > 0 and avg_abs_amplitude(left - window_size, left) > BNT:
-		left -= 1
+		left -= 5
 
 	while right < signal_length - 1 and avg_abs_amplitude(right, right + window_size) > BNT:
-		right += 1
+		right += 5
 
 	if right - left < 10:
 		left = max(0, center_idx - 500)
@@ -221,6 +223,11 @@ def append_features_to_file(features, filename):
 			# write it to the file
 			writer.writerow(row)
 
+def clean_filename(filename):
+	if filename.endswith(".wav"):
+		filename = filename[:-4]
+	return filename.replace("_"," ")
+
 
 # main function for training data
 def main():
@@ -249,6 +256,10 @@ def main():
 	# append matrix to csv file
 	append_features_to_file(x_train, "keyclick_data.csv")
 
+	keys = clean_filename(filename)
+#	print("keys after cleaning: ", keys)
+
+	append_keys_to_file(keys, "labels.csv")
 
 if __name__ == "__main__":
 	main()
