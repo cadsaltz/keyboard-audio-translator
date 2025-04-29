@@ -20,10 +20,10 @@ import sys
 from scipy.signal import find_peaks, butter, filtfilt
 
 # import wav reading, detecting clicks, and var defs from training function
-from trainx import read_wav, detect_clicks, WINDOW_LEFT, WINDOW_RIGHT, PEAK_THRES, PEAK_DIST
+from train import read_wav, detect_clicks, find_dynamic_window, PEAK_THRES, PEAK_DIST, BNT, WIN
 
 # plot the wav file, highlight and border the key presses
-def plot_click_windows(signal, times, peaks, window_left, window_right, sample_freq, png_filename):
+def plot_click_windows(signal, times, peaks, sample_freq, png_filename):
 
 	# init a plot
 	plt.figure(figsize=(20,5))
@@ -31,19 +31,19 @@ def plot_click_windows(signal, times, peaks, window_left, window_right, sample_f
 	# plot the time and signal (amplitudes)
 	plt.plot(times, signal)
 
-	# convert the window into seconds instead of number of samples
-	window_left_sec = window_left / sample_freq
-	window_right_sec = window_right / sample_freq
-
 	# for every location of a peak
 	for peak in peaks:
 
+		window_signal, left, right = find_dynamic_window(signal, peak, WIN)
+		
 		# convert its index from samples to seconds
+		left_time = left / sample_freq
+		right_time = right / sample_freq
 		peak_time = peak / sample_freq
 
 		# border and highlight it on the plot
 		plt.axvline(x=peak_time, color='red',linestyle='--', linewidth=1)
-		plt.axvspan(peak_time-window_left_sec, peak_time+window_right_sec, color='orange', alpha=0.3)
+		plt.axvspan(left_time, right_time, color='orange', alpha=0.3)
 
 	# add title and labels for the plot
 	plt.title('Key click events detected')
@@ -81,7 +81,7 @@ def main():
 	png_filename = filename.replace(".wav", ".png")
 
 	# plot the given file
-	plot_click_windows(signal, times, peaks, WINDOW_LEFT, WINDOW_RIGHT, freq, png_filename)
+	plot_click_windows(signal, times, peaks, freq, png_filename)
 
 	# check validity of the wav file
 	# there should be an even number of peaks (each click has a press and release peak)
