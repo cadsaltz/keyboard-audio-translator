@@ -1,0 +1,38 @@
+#!/bin/bash
+
+
+# sudo cp recordk /usr/local/bin/
+
+
+# Check if an argument (recording duration) is provided
+if [ -z "$1" ]; then
+    echo "Usage: record <seconds>"
+    exit 1
+fi
+
+# Set duration from argument
+duration=$1
+
+# Get the first available microphone
+mic_device=$(arecord -l | grep -m 1 "card" | awk '{print $2}' | tr -d ':')
+
+if [ -z "$mic_device" ]; then
+    echo "No recording device found!"
+    exit 1
+fi
+
+# Record the audio
+record_audio() {
+	wav_output="re_$(date +%H%M).wav"
+	echo "Recording for $duration seconds..."
+	arecord -D plughw:1,0 -f cd -t wav -d $duration "$wav_output"
+	echo "Recording saved as $wav_output"
+}
+
+record_audio
+
+
+
+
+
+
