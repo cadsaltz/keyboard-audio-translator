@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # bash wrapper for the listen program
-python3 listen.py "$@"
+python3 ~/projects/listen/main/listen.py "$@"

@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # bash wrapper for the learn program
-python3 learn.py "$@"
+python3 ~/projects/listen/main/learn.py "$@"

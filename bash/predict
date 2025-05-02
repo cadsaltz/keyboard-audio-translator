@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # bash wrapper for the predict program
-python3 predict.py "$@"
+python3 ~/projects/listen/main/predict.py "$@"

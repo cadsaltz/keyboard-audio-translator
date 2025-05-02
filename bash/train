@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # bash wrapper to run the train program once
-python3 train.py "$@"
+python3 ~/projects/listen/main/train.py "$@"

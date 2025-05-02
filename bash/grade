@@ -5,5 +5,5 @@
 # uses the listen function against every wav file in the current directory
 for file in *.wav; do
 	echo "Checking file: " "$file"
-	python3 listen.py "$file"
+	python3 ~/projects/listen/main/listen.py "$file"
 done

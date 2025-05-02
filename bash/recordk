@@ -32,6 +32,7 @@ record_audio() {
 
 record_audio
 
+listen "$wav_output"
 
 
 

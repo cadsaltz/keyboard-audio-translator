@@ -5,7 +5,7 @@
 # pass all the wav files into the train function
 # populates the csv files
 for file in *.wav; do
-	python3 train.py "$file"
+	python3 ~/projects/listen/main/train.py "$file"
 	echo "Added file: " "$file"
 	wc *.csv
 done

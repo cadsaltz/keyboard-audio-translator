@@ -411,7 +411,7 @@ def grade(signal, peaks):
 		if abs(l1 - l2) <= 20 or abs(r1 - r2) <= 20:
 
 			# two events share the same window, complete overlap
-			print("COMPLETE OVERLAP with peaks", count, "and ", count+1)
+			#print("COMPLETE OVERLAP with peaks", count, "and ", count+1)
 
 			# file is not clean
 			clean = False
@@ -420,7 +420,7 @@ def grade(signal, peaks):
 		elif (l2 < r1):
 
 			# the two event windows partially overlap, if not completely
-			print("PARTIAL OVERLAP with peaks: ", count, " and ", count+1)
+			#print("PARTIAL OVERLAP with peaks: ", count, " and ", count+1)
 
 			# file is not clean
 			clean = False	
@@ -432,7 +432,7 @@ def grade(signal, peaks):
 	if (clean):
 
 		# the file is clean and usable
-		print("NO overlap, signal is clean")
+		print("CLEAN, no overlap detected")
 
 	# if the file has at least one overlap
 	else :

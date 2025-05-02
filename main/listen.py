@@ -56,6 +56,7 @@ def main():
 
 	# grade the wav file, display the validity of the contained data
 	grade(signal, peaks)
+	print(" ")
 
 
 if __name__ == "__main__":
