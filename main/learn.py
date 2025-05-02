@@ -12,19 +12,7 @@
 # import sys for argument inputs
 import sys
 
-# import os and csv for file ingestion
-import os
-import csv
-
-# import numpy for data manipulation
-import numpy as np
-
-#import pickle for model dumping/importing
-import pickle
-
-# import ml library
-from sklearn.ensemble import RandomForestClassifier
-
+# from the model file, import all necessary functions
 from model import load_feature_matrix, load_labels_matrix, prune_align, encode_labels, learn
 
 # main function

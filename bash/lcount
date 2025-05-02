@@ -1,3 +1,5 @@
 #!/bin/bash
 
+# bash wrapper for the lcount program
+# counts the distribution of letters in the given file
 python3 lcount.py "$@"

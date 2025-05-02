@@ -4,24 +4,11 @@
 # highlight and border key presses
 # inform user of number of keys and validity
 
-# import wave for wav file reading
-import wave
-
-# import matplot for visualizing the wav file
-import matplotlib.pyplot as plt
-
-# import numpy for matrices
-import numpy as np
-
 # import sys for argument inputs
 import sys
 
-# import scipy for wav manipulation
-from scipy.signal import find_peaks, butter, filtfilt
-
 # import wav reading, detecting clicks, and var defs from training function
 from extractFeatures import read_wav, detect_clicks, PEAK_THRES, PEAK_DIST, evenSteven, grade, plot_click_windows
-
 
 # main function
 # handle argument inputs, read the file, plot it, and check validity
@@ -56,14 +43,18 @@ def main():
 	# check validity of the wav file
 	# there should be an even number of peaks (each click has a press and release peak)
 	if evenSteven(peaks):
+
+		# even number of peaks (press and release pairs)
 		print("likely valid")
 
 	else:
+		# odd number of peaks (press and release pairs)
 		print("invalid")
 
 	# also tell the user how many keys were detected (pairs of peaks)
 	print("Number of keypresses detected: ", (len(peaks) / 2))
 
+	# grade the wav file, display the validity of the contained data
 	grade(signal, peaks)
 
 

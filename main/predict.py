@@ -7,32 +7,15 @@
 
 # use model and data to predict characters
 
-# import wave for wav file reading
-import wave
-
-# import numpy for data manipulation
-import numpy as np
 
 # import sys for argument inputs
 import sys
 
-# import signal and fft for audio reading
-from scipy.signal import find_peaks, butter, filtfilt
-from scipy.fft import fft, fftfreq
-
-# import csv and os for csv import/export
-import csv
-import os
-
-# import functions from x data training program
+# import functions from data training file
 from extractFeatures import read_wav, detect_clicks
 
+# import functions from model file
 from model import predict, prune, decode_labels
-
-# improt pickle for model exporting/importing
-import pickle
-
-
 
 # main function
 def main():

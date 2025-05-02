@@ -1,3 +1,4 @@
 #!/bin/bash
 
+# bash wrapper for the learn program
 python3 learn.py "$@"

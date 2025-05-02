@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# bash wrapper for the train function
+
+# pass all the wav files into the train function
+# populates the csv files
 for file in *.wav; do
 	python3 train.py "$file"
 	echo "Added file: " "$file"

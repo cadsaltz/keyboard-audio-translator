@@ -3,6 +3,7 @@
 
 # sudo cp recordk /usr/local/bin/
 
+# bash script to record a wav file using the microphone
 
 # Check if an argument (recording duration) is provided
 if [ -z "$1" ]; then

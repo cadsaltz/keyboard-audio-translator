@@ -2,31 +2,15 @@
 
 # given file, extract x data and dump into csv file
 
-# import for wav file reading
-import wave
-
-# import numpy for matrices
-import numpy as np
 
 # import sys for argument inputs
 import sys
 
-# import signal fro wav file reading
-from scipy.signal import find_peaks, butter, filtfilt
-
-# impor fft for data extraction
-from scipy.fft import fft, fftfreq
-
-from scipy.stats import skew, kurtosis
-from scipy.optimize import curve_fit
-
-# import csv and os for csv file creation
-import csv
-import os
-
-from extractFeatures import read_wav, detect_clicks, build_feature_matrix, append_features_to_file, append_keys_to_file, clean_filename
+# import all necessary functions from extract features
+from extractFeatures import read_wav, detect_clicks, build_feature_matrix, append_features_to_file, append_keys_to_file, clean_filename, PEAK_THRES, PEAK_DIST
 
 # main function for training data
+# this version uses the filename as the labels and populates both csv files in parallel
 def main():
 
 	# parse system argumnts
@@ -54,9 +38,12 @@ def main():
 	# append matrix to csv file
 	append_features_to_file(x_train, "keyclick_data.csv")
 
+	# use the wav filename as the labels
+	# clean the filename (replace underscores and remove .wav)
 	keys = clean_filename(filename)
-#	print("keys after cleaning: ", keys)
+	#print("keys after cleaning: ", keys)
 
+	# add the labels to the labels file
 	append_keys_to_file(keys, "labels.csv")
 
 if __name__ == "__main__":
